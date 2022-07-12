@@ -42,8 +42,6 @@ fun HomeScreen(navController: NavController, viewModel: QuizViewModel) {
             },
         )
     }) {
-
-
         Box(
             modifier = Modifier
                 .fillMaxSize()
@@ -56,7 +54,9 @@ fun HomeScreen(navController: NavController, viewModel: QuizViewModel) {
                     text = "Welcome to Classics Quiz",
                     style = MaterialTheme.typography.h5
                 )
+
                 Box(modifier = Modifier.height(40.dp))
+
                 Column(
                     modifier = Modifier.fillMaxWidth(),
                 ) {
@@ -67,8 +67,7 @@ fun HomeScreen(navController: NavController, viewModel: QuizViewModel) {
                     )
                     OutlinedTextField(
                         value = playerName.value,
-                        onValueChange =
-                        viewModel::setPlayerName,
+                        onValueChange = viewModel::setPlayerName,
                         modifier = Modifier
                             .background(Color.Transparent)
                             .fillMaxWidth(),
@@ -83,6 +82,7 @@ fun HomeScreen(navController: NavController, viewModel: QuizViewModel) {
                         maxLines = 1
                     )
                 }
+
                 Box(modifier = Modifier.height(100.dp))
 
                 Box(
@@ -92,26 +92,77 @@ fun HomeScreen(navController: NavController, viewModel: QuizViewModel) {
 
                 ) {
                     Column(modifier = Modifier.fillMaxWidth()) {
-                        Button(
-                            onClick = {
-                                viewModel.getQuestion()
-                                if (playerName.value.isNotBlank()) {
-                                    viewModel.setPlayerName(playerName.value)
-                                }
-                                navController.navigate(Screen.QuestionScreen.route)
-                            },
-                            modifier = Modifier
-                                .weight(2f)
-                                .fillMaxWidth()
-                        ) {
-                            Text(
-                                text = "Start Quiz",
-                                style = MaterialTheme.typography.button.copy(
-                                    fontSize = 24.sp
+                        Row(modifier = Modifier.height(330.dp)) {
+                            Button(
+                                onClick = {
+                                    viewModel.getQuestion()
+                                    if (playerName.value.isNotBlank()) {
+                                        viewModel.setPlayerName(playerName.value)
+                                    }
+                                    navController.navigate(Screen.QuestionScreen.route)
+                                },
+                                modifier = Modifier
+                                    .weight(2f)
+                                    .fillMaxWidth()
+                                    .fillMaxHeight()
+                            ) {
+                                Text(
+                                    text = "Latin",
+                                    style = MaterialTheme.typography.button.copy(
+                                        fontSize = 24.sp
+                                    )
                                 )
-                            )
+                            }
+
+                            Box(modifier = Modifier.width(5.dp))
+
+                            Button(
+                                onClick = {
+                                    viewModel.getQuestion()
+                                    if (playerName.value.isNotBlank()) {
+                                        viewModel.setPlayerName(playerName.value)
+                                    }
+                                    navController.navigate(Screen.QuestionScreen.route)
+                                },
+                                modifier = Modifier
+                                    .weight(2f)
+                                    .fillMaxWidth()
+                                    .fillMaxHeight()
+                            ) {
+                                Text(
+                                    text = "Greek",
+                                    style = MaterialTheme.typography.button.copy(
+                                        fontSize = 24.sp
+                                    )
+                                )
+                            }
+
+                            Box(modifier = Modifier.width(5.dp))
+
+                            Button(
+                                onClick = {
+                                    viewModel.getQuestion()
+                                    if (playerName.value.isNotBlank()) {
+                                        viewModel.setPlayerName(playerName.value)
+                                    }
+                                    navController.navigate(Screen.QuestionScreen.route)
+                                },
+                                modifier = Modifier
+                                    .weight(2f)
+                                    .fillMaxWidth()
+                                    .fillMaxHeight()
+                            ) {
+                                Text(
+                                    text = "Mixed",
+                                    style = MaterialTheme.typography.button.copy(
+                                        fontSize = 24.sp
+                                    )
+                                )
+                            }
                         }
+
                         Box(modifier = Modifier.height(24.dp))
+
                         Button(
                             onClick = {
                                 activity?.finish()

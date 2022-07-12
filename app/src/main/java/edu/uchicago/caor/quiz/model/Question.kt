@@ -5,9 +5,9 @@ import java.util.*
 
 
 class Question(
-    val country: String,
-    val capital: String,
-    val region: String,
+    val english: String,
+    val latin: String,
+    val greek: String,
     val allAnswers: MutableList<String> = mutableListOf()
 ) {
     private val random = Random()
@@ -17,11 +17,11 @@ class Question(
             allAnswers.add(answer)
         } else {
             val insertAt = random.nextInt(allAnswers.size)
-            allAnswers.add(insertAt, answer )
+            allAnswers.add(insertAt, answer)
         }
     }
 
     val questionText: String
-        get() = "What is the capital of $country?"
+        get() = "Which is $english?"
 
 }

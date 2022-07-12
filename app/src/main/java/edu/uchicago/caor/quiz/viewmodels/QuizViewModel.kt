@@ -9,10 +9,10 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import edu.uchicago.caor.quiz.R
 import edu.uchicago.caor.quiz.model.Question
-import edu.uchicago.caor.quiz.util.Constants.CAPITAL_INDEX
-import edu.uchicago.caor.quiz.util.Constants.COUNTRY_INDEX
+import edu.uchicago.caor.quiz.util.Constants.LAT_INDEX
+import edu.uchicago.caor.quiz.util.Constants.ENG_INDEX
 import edu.uchicago.caor.quiz.util.Constants.PIPE
-import edu.uchicago.caor.quiz.util.Constants.REGION_INDEX
+import edu.uchicago.caor.quiz.util.Constants.GRK_INDEX
 import kotlinx.coroutines.*
 import javax.inject.Inject
 import kotlin.random.Random
@@ -22,7 +22,7 @@ import kotlin.random.Random
 class QuizViewModel @Inject constructor(private val application: Application) : ViewModel() {
 
     //this value used on the HomeScreen
-    private var _playerName = mutableStateOf("Adam")
+    private var _playerName = mutableStateOf("Mark")
     val playerName: State<String> = _playerName
 
 
@@ -73,7 +73,7 @@ class QuizViewModel @Inject constructor(private val application: Application) : 
 
         //arrayDeferred is the future value returned by .async
         val arrayDeferred = CoroutineScope(Dispatchers.IO).async {
-            application.resources.getStringArray(R.array.countries_capitals)
+            application.resources.getStringArray(R.array.classic_words)
         }
         //calling .await() forces execution to wait until the value gets returned
         val array = arrayDeferred.await()
@@ -91,9 +91,9 @@ class QuizViewModel @Inject constructor(private val application: Application) : 
             //convert it into a new question object
             val question =
                 Question(
-                    correctAnswer[COUNTRY_INDEX],
-                    correctAnswer[CAPITAL_INDEX],
-                    correctAnswer[REGION_INDEX]
+                    correctAnswer[ENG_INDEX],
+                    correctAnswer[LAT_INDEX],
+                    correctAnswer[GRK_INDEX]
                 )
 
             while (question.allAnswers.size < 5) {
@@ -101,20 +101,20 @@ class QuizViewModel @Inject constructor(private val application: Application) : 
                 //if any of these conditions are met, go fetch another one
                 while (
                 //the capital of potentialWrongAnswer is the same (same as correctAnswer), skip
-                    potentialWrongAnswer[CAPITAL_INDEX] == correctAnswer[CAPITAL_INDEX] ||
+                    potentialWrongAnswer[LAT_INDEX] == correctAnswer[LAT_INDEX] ||
                     //to make questions more difficult, the wrong answers should be in the same region, if not skip
-                    potentialWrongAnswer[REGION_INDEX] != correctAnswer[REGION_INDEX] ||
+                    potentialWrongAnswer[GRK_INDEX] != correctAnswer[GRK_INDEX] ||
                     //the wrong answers already contain the potentialWrongAnswer, skip
-                    question.allAnswers.contains(potentialWrongAnswer[CAPITAL_INDEX])
+                    question.allAnswers.contains(potentialWrongAnswer[LAT_INDEX])
                 ) {
                     //go fetch another one
                     potentialWrongAnswer = getPipedCountryAndCapital()
                 }
                 //add the capital of the validated potentialWrongAnswer to the wrong answers of the question
-                question.addAnswer(potentialWrongAnswer[CAPITAL_INDEX])
+                question.addAnswer(potentialWrongAnswer[LAT_INDEX])
             }
             //add the correct answer
-            question.addAnswer(question.capital)
+            question.addAnswer(question.latin)
             _question.value = question
         }
     }
@@ -126,7 +126,7 @@ class QuizViewModel @Inject constructor(private val application: Application) : 
         _questionNumber.value = nextNumber
 
         //if the user selected the correct answer
-        if (question.capital == selectedOption.value) {
+        if (question.latin == selectedOption.value) {
             incrementCorrect()
         } else {
             incrementIncorrect()
