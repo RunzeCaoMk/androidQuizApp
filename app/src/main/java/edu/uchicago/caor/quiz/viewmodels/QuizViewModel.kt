@@ -31,7 +31,7 @@ class QuizViewModel @Inject constructor(private val application: Application) : 
 
     //these values used on the QuestionScreen
     //the following is used for preview-only
-    private var previewAnswers = mutableListOf("Neró", "Etos", "Skýlos", "Kefáli", "Kýklos")
+    private var previewAnswers = mutableListOf("Neró", "Equus", "Skýlos", "Kefáli", "Kýklos")
     private var _question = mutableStateOf<Question>(Question("Horse", "Equus", "Hippo", "马", previewAnswers))
     val question: State<Question> = _question
 
@@ -45,7 +45,7 @@ class QuizViewModel @Inject constructor(private val application: Application) : 
     private var _correctSubmissions = mutableStateOf<Int>(92);
     val correctSubmissions: State<Int> = _correctSubmissions
 
-    private var _incorrectSubmissions = mutableStateOf<Int>(8);
+    private var _incorrectSubmissions = mutableStateOf<Int>(81);
     val incorrectSubmissions: State<Int> = _incorrectSubmissions
 
 

@@ -49,7 +49,7 @@ fun ResultScreen(navController: NavController, viewModel: QuizViewModel) {
                         .weight(7f)
                 ) {
                     Text(
-                        text = "$playerName, your results are:",
+                        text = "${playerName}, your results are:",
                         modifier = Modifier.padding(horizontal = 16.dp, vertical = 40.dp),
                         style = MaterialTheme.typography.h6
                     )
@@ -65,7 +65,7 @@ fun ResultScreen(navController: NavController, viewModel: QuizViewModel) {
                                     .background(Color.DarkGray)
                             ) {
                                 Text(
-                                    text = "Correct: $correctSubmissions",
+                                    text = "Correct: ${correctSubmissions}",
                                     modifier = Modifier.padding(
                                         vertical = 18.dp,
                                         horizontal = 24.dp
@@ -86,7 +86,7 @@ fun ResultScreen(navController: NavController, viewModel: QuizViewModel) {
                                     .background(Color.DarkGray)
                             ) {
                                 Text(
-                                    text = "Incorrect: $incorrectSubmissions",
+                                    text = "Incorrect: ${incorrectSubmissions}",
                                     modifier = Modifier.padding(
                                         vertical = 18.dp,
                                         horizontal = 24.dp
