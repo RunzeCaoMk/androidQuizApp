@@ -5,4 +5,5 @@ object Constants {
     const val ENG_INDEX = 0
     const val LAT_INDEX = 1
     const val GRK_INDEX = 2
+    const val CHN_INDEX = 3
 }

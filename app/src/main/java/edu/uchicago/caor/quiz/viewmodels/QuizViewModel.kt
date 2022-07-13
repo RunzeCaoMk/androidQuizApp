@@ -9,6 +9,7 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import edu.uchicago.caor.quiz.R
 import edu.uchicago.caor.quiz.model.Question
+import edu.uchicago.caor.quiz.util.Constants.CHN_INDEX
 import edu.uchicago.caor.quiz.util.Constants.LAT_INDEX
 import edu.uchicago.caor.quiz.util.Constants.ENG_INDEX
 import edu.uchicago.caor.quiz.util.Constants.PIPE
@@ -24,18 +25,20 @@ class QuizViewModel @Inject constructor(private val application: Application) : 
     //this value used on the HomeScreen
     private var _playerName = mutableStateOf("Mark")
     val playerName: State<String> = _playerName
+    private var _langOption = mutableStateOf("Latin")
+    val langOption: State<String> = _langOption
 
 
     //these values used on the QuestionScreen
     //the following is used for preview-only
-    private var previewAnswers = mutableListOf("Paris", "Berlin", "London", "Dublin", "Lisbon")
-    private var _question = mutableStateOf<Question>(Question("Germany", "Berlin", "EUR", previewAnswers))
+    private var previewAnswers = mutableListOf("Neró", "Etos", "Skýlos", "Kefáli", "Kýklos")
+    private var _question = mutableStateOf<Question>(Question("Horse", "Equus", "Hippo", "马", previewAnswers))
     val question: State<Question> = _question
 
     private var _questionNumber = mutableStateOf<Int>(1)
     val questionNumber: State<Int> = _questionNumber
 
-    private var _selectedOption = mutableStateOf<String>("Berlin")
+    private var _selectedOption = mutableStateOf<String>("Neró")
     val selectedOption: State<String> = _selectedOption
 
 
@@ -45,7 +48,6 @@ class QuizViewModel @Inject constructor(private val application: Application) : 
 
     private var _incorrectSubmissions = mutableStateOf<Int>(8);
     val incorrectSubmissions: State<Int> = _incorrectSubmissions
-
 
 
     init {
@@ -63,13 +65,16 @@ class QuizViewModel @Inject constructor(private val application: Application) : 
         _playerName.value = name
 
     }
+    fun setLangOption(opt: String) {
+        _langOption.value = opt
+    }
 
     //////////////////////////////////
     //methods for QuestionScreen
     //////////////////////////////////
-    //this method will fetch a random item from resources array such as <item>Greece|Athens|EUR</item>
+    //this method will fetch a random item from resources array such as <item>Horse|Equus|Hippo</item>
     //and then split and return it as List<String>
-    private suspend fun getPipedCountryAndCapital() : List<String> {
+    private suspend fun getPipedQA() : List<String> {
 
         //arrayDeferred is the future value returned by .async
         val arrayDeferred = CoroutineScope(Dispatchers.IO).async {
@@ -83,24 +88,24 @@ class QuizViewModel @Inject constructor(private val application: Application) : 
     }
 
     fun getQuestion() {
-
         //in order to update the UI, we must be on the UI aka Main thread in Android
         viewModelScope.launch(Dispatchers.Main) {
-            //gets a random country capitals from the array in resources
-            val correctAnswer: List<String> = getPipedCountryAndCapital()
+            //gets a random english word from the array in resources
+            val correctAnswer: List<String> = getPipedQA()
             //convert it into a new question object
             val question =
                 Question(
                     correctAnswer[ENG_INDEX],
                     correctAnswer[LAT_INDEX],
-                    correctAnswer[GRK_INDEX]
+                    correctAnswer[GRK_INDEX],
+                    correctAnswer[CHN_INDEX]
                 )
 
             while (question.allAnswers.size < 5) {
-                var potentialWrongAnswer = getPipedCountryAndCapital()
+                var potentialWrongAnswer = getPipedQA()
                 //if any of these conditions are met, go fetch another one
                 while (
-                //the capital of potentialWrongAnswer is the same (same as correctAnswer), skip
+                //the capital of potentialWrongAnswer is the same as correctAnswer, skip
                     potentialWrongAnswer[LAT_INDEX] == correctAnswer[LAT_INDEX] ||
                     //to make questions more difficult, the wrong answers should be in the same region, if not skip
                     potentialWrongAnswer[GRK_INDEX] != correctAnswer[GRK_INDEX] ||
@@ -108,7 +113,7 @@ class QuizViewModel @Inject constructor(private val application: Application) : 
                     question.allAnswers.contains(potentialWrongAnswer[LAT_INDEX])
                 ) {
                     //go fetch another one
-                    potentialWrongAnswer = getPipedCountryAndCapital()
+                    potentialWrongAnswer = getPipedQA()
                 }
                 //add the capital of the validated potentialWrongAnswer to the wrong answers of the question
                 question.addAnswer(potentialWrongAnswer[LAT_INDEX])
@@ -125,12 +130,29 @@ class QuizViewModel @Inject constructor(private val application: Application) : 
         //and then set the intermediate variable to the mutable-state
         _questionNumber.value = nextNumber
 
-        //if the user selected the correct answer
-        if (question.latin == selectedOption.value) {
-            incrementCorrect()
-        } else {
-            incrementIncorrect()
+        if (_langOption.value == "Latin") { // Latin Mode
+            //if the user selected the correct answer
+            if (question.latin == selectedOption.value) {
+                incrementCorrect()
+            } else {
+                incrementIncorrect()
+            }
+        } else if (_langOption.value == "Greek") { // Greek Mode
+            //if the user selected the correct answer
+            if (question.greek == selectedOption.value) {
+                incrementCorrect()
+            } else {
+                incrementIncorrect()
+            }
+        } else { // Mixed Mode
+            //if the user selected the correct answer
+            if (question.latin == selectedOption.value || question.greek == selectedOption.value) {
+                incrementCorrect()
+            } else {
+                incrementIncorrect()
+            }
         }
+
         //queue up another valid question
         getQuestion()
         //clear out the selected value
@@ -158,6 +180,7 @@ class QuizViewModel @Inject constructor(private val application: Application) : 
     fun reset() {
         anotherQuiz()
         _playerName.value = ""
+        _langOption.value = ""
     }
 
     private fun incrementCorrect() {

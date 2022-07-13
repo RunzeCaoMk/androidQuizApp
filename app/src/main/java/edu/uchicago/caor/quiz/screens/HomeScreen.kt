@@ -30,6 +30,7 @@ fun HomeScreen(navController: NavController, viewModel: QuizViewModel) {
     val activity = (LocalContext.current as? Activity)
     val localFocusManager = LocalFocusManager.current
     val playerName = viewModel.playerName
+    val language = viewModel.langOption
 
 
     Scaffold(topBar = {
@@ -92,12 +93,15 @@ fun HomeScreen(navController: NavController, viewModel: QuizViewModel) {
 
                 ) {
                     Column(modifier = Modifier.fillMaxWidth()) {
-                        Row(modifier = Modifier.height(330.dp)) {
+                        Row(modifier = Modifier.height(160.dp)) {
                             Button(
                                 onClick = {
                                     viewModel.getQuestion()
                                     if (playerName.value.isNotBlank()) {
                                         viewModel.setPlayerName(playerName.value)
+                                    }
+                                    if (language.value.isNotBlank()) {
+                                        viewModel.setLangOption("Latin")
                                     }
                                     navController.navigate(Screen.QuestionScreen.route)
                                 },
@@ -122,6 +126,9 @@ fun HomeScreen(navController: NavController, viewModel: QuizViewModel) {
                                     if (playerName.value.isNotBlank()) {
                                         viewModel.setPlayerName(playerName.value)
                                     }
+                                    if (language.value.isNotBlank()) {
+                                        viewModel.setLangOption("Greek")
+                                    }
                                     navController.navigate(Screen.QuestionScreen.route)
                                 },
                                 modifier = Modifier
@@ -136,6 +143,34 @@ fun HomeScreen(navController: NavController, viewModel: QuizViewModel) {
                                     )
                                 )
                             }
+                        }
+
+                        Box(modifier = Modifier.height(10.dp))
+
+                        Row(modifier = Modifier.height(160.dp)) {
+                            Button(
+                                onClick = {
+                                    viewModel.getQuestion()
+                                    if (playerName.value.isNotBlank()) {
+                                        viewModel.setPlayerName(playerName.value)
+                                    }
+                                    if (language.value.isNotBlank()) {
+                                        viewModel.setLangOption("Chinese")
+                                    }
+                                    navController.navigate(Screen.QuestionScreen.route)
+                                },
+                                modifier = Modifier
+                                    .weight(2f)
+                                    .fillMaxWidth()
+                                    .fillMaxHeight()
+                            ) {
+                                Text(
+                                    text = "Chinese",
+                                    style = MaterialTheme.typography.button.copy(
+                                        fontSize = 24.sp
+                                    )
+                                )
+                            }
 
                             Box(modifier = Modifier.width(5.dp))
 
@@ -144,6 +179,9 @@ fun HomeScreen(navController: NavController, viewModel: QuizViewModel) {
                                     viewModel.getQuestion()
                                     if (playerName.value.isNotBlank()) {
                                         viewModel.setPlayerName(playerName.value)
+                                    }
+                                    if (language.value.isNotBlank()) {
+                                        viewModel.setLangOption("Mixed")
                                     }
                                     navController.navigate(Screen.QuestionScreen.route)
                                 },

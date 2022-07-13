@@ -8,6 +8,7 @@ class Question(
     val english: String,
     val latin: String,
     val greek: String,
+    val chinese: String,
     val allAnswers: MutableList<String> = mutableListOf()
 ) {
     private val random = Random()
