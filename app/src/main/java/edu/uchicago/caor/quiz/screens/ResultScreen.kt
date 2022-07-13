@@ -22,14 +22,15 @@ import edu.uchicago.caor.quiz.viewmodels.QuizViewModel
 fun ResultScreen(navController: NavController, viewModel: QuizViewModel) {
     val correctSubmissions = viewModel.correctSubmissions.value
     val incorrectSubmissions = viewModel.incorrectSubmissions.value
-    val scorePercent = 100 * (correctSubmissions.toDouble() /  (correctSubmissions + incorrectSubmissions))
+    val scorePercent =
+        100 * (correctSubmissions.toDouble() / (correctSubmissions + incorrectSubmissions))
     val playerName = viewModel.playerName.value
 
     Scaffold(topBar = {
         TopAppBar(
             title = {
                 Text(
-                    text = "Capitals Quiz",
+                    text = "Classics Quiz",
                     textAlign = TextAlign.Start,
                 )
             },
@@ -62,10 +63,9 @@ fun ResultScreen(navController: NavController, viewModel: QuizViewModel) {
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .background(Color.DarkGray)
-
                             ) {
                                 Text(
-                                    text = "Correct: ${correctSubmissions}",
+                                    text = "Correct: $correctSubmissions",
                                     modifier = Modifier.padding(
                                         vertical = 18.dp,
                                         horizontal = 24.dp
@@ -76,16 +76,17 @@ fun ResultScreen(navController: NavController, viewModel: QuizViewModel) {
                                 )
                             }
                         }
+
                         Box(modifier = Modifier.height(24.dp))
+
                         Box(modifier = Modifier.padding(horizontal = 16.dp)) {
                             Box(
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .background(Color.DarkGray)
-
                             ) {
                                 Text(
-                                    text = "Incorrect: ${incorrectSubmissions}",
+                                    text = "Incorrect: $incorrectSubmissions",
                                     modifier = Modifier.padding(
                                         vertical = 18.dp,
                                         horizontal = 24.dp
@@ -96,13 +97,14 @@ fun ResultScreen(navController: NavController, viewModel: QuizViewModel) {
                                 )
                             }
                         }
+
                         Box(modifier = Modifier.height(24.dp))
+
                         Box(modifier = Modifier.padding(horizontal = 16.dp)) {
                             Box(
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .background(Color.DarkGray)
-
                             ) {
                                 Text(
                                     text = "Score: ${scorePercent.toInt()}%",
@@ -142,18 +144,21 @@ fun ResultScreen(navController: NavController, viewModel: QuizViewModel) {
                             )
                         )
                     }
+
                     Box(modifier = Modifier.width(8.dp))
+
                     Button(
                         onClick = {
                             viewModel.reset()
                             navController.popBackStack(Screen.ResultScreen.route, true)
                             navController.popBackStack(Screen.QuestionScreen.route, true)
+//                            // TODO: navigate to Home screen
+//                            navController.navigate(Screen.QuestionScreen.route)
                         },
                         modifier = Modifier
                             .weight(2f)
                             .fillMaxHeight(),
                         colors = ButtonDefaults.buttonColors(backgroundColor = RedColor)
-
                     ) {
                         Text(
                             text = "Reset", style = MaterialTheme.typography.button.copy(

@@ -41,7 +41,6 @@ class QuizViewModel @Inject constructor(private val application: Application) : 
     private var _selectedOption = mutableStateOf<String>("Neró")
     val selectedOption: State<String> = _selectedOption
 
-
     //these values used on the ResultScreen
     private var _correctSubmissions = mutableStateOf<Int>(92);
     val correctSubmissions: State<Int> = _correctSubmissions
@@ -63,7 +62,6 @@ class QuizViewModel @Inject constructor(private val application: Application) : 
     //////////////////////////////////
     fun setPlayerName(name: String) {
         _playerName.value = name
-
     }
     fun setLangOption(opt: String) {
         _langOption.value = opt
@@ -103,20 +101,48 @@ class QuizViewModel @Inject constructor(private val application: Application) : 
 
             while (question.allAnswers.size < 5) {
                 var potentialWrongAnswer = getPipedQA()
-                //if any of these conditions are met, go fetch another one
-                while (
-                //the capital of potentialWrongAnswer is the same as correctAnswer, skip
-                    potentialWrongAnswer[LAT_INDEX] == correctAnswer[LAT_INDEX] ||
-                    //to make questions more difficult, the wrong answers should be in the same region, if not skip
-                    potentialWrongAnswer[GRK_INDEX] != correctAnswer[GRK_INDEX] ||
-                    //the wrong answers already contain the potentialWrongAnswer, skip
-                    question.allAnswers.contains(potentialWrongAnswer[LAT_INDEX])
-                ) {
-                    //go fetch another one
-                    potentialWrongAnswer = getPipedQA()
+                if (_langOption.value == "Latin") { // Latin Mode
+                    while (
+                    //the word of potentialWrongAnswer is the same as correctAnswer then skip
+                        potentialWrongAnswer[LAT_INDEX] == correctAnswer[LAT_INDEX] ||
+                        //the wrong answers already contain the potentialWrongAnswer, skip
+                        question.allAnswers.contains(potentialWrongAnswer[LAT_INDEX])
+                    ) {
+                        //go fetch another one
+                        potentialWrongAnswer = getPipedQA()
+                    }
+                    //add the capital of the validated potentialWrongAnswer to the wrong answers of the question
+                    question.addAnswer(potentialWrongAnswer[LAT_INDEX])
+                } else if (_langOption.value == "Greek") { // Greek Mode
+                    while (
+                        potentialWrongAnswer[GRK_INDEX] == correctAnswer[GRK_INDEX] ||
+                        question.allAnswers.contains(potentialWrongAnswer[GRK_INDEX])
+                    ) {
+                        potentialWrongAnswer = getPipedQA()
+                    }
+                    question.addAnswer(potentialWrongAnswer[GRK_INDEX])
+                } else if (_langOption.value == "Chinese") { // Chinese Mode
+                    while (
+                        potentialWrongAnswer[CHN_INDEX] == correctAnswer[CHN_INDEX] ||
+                        question.allAnswers.contains(potentialWrongAnswer[CHN_INDEX])
+                    ) {
+                        potentialWrongAnswer = getPipedQA()
+                    }
+                    question.addAnswer(potentialWrongAnswer[CHN_INDEX])
+                } else { // Mixed Mode
+                    while (
+                        potentialWrongAnswer[LAT_INDEX] == correctAnswer[LAT_INDEX] ||
+                        potentialWrongAnswer[GRK_INDEX] == correctAnswer[GRK_INDEX] ||
+                        potentialWrongAnswer[CHN_INDEX] == correctAnswer[CHN_INDEX] ||
+                        question.allAnswers.contains(potentialWrongAnswer[LAT_INDEX]) ||
+                        question.allAnswers.contains(potentialWrongAnswer[GRK_INDEX]) ||
+                        question.allAnswers.contains(potentialWrongAnswer[CHN_INDEX])
+                    ) {
+                        potentialWrongAnswer = getPipedQA()
+                    }
+                    val randomIndex : Int = Random.nextInt(1, 3)
+                    question.addAnswer(potentialWrongAnswer[randomIndex])
                 }
-                //add the capital of the validated potentialWrongAnswer to the wrong answers of the question
-                question.addAnswer(potentialWrongAnswer[LAT_INDEX])
             }
             //add the correct answer
             question.addAnswer(question.latin)
@@ -144,9 +170,20 @@ class QuizViewModel @Inject constructor(private val application: Application) : 
             } else {
                 incrementIncorrect()
             }
+        } else if (_langOption.value == "Chinese") { // Chinese Mode
+            //if the user selected the correct answer
+            if (question.chinese == selectedOption.value) {
+                incrementCorrect()
+            } else {
+                incrementIncorrect()
+            }
         } else { // Mixed Mode
             //if the user selected the correct answer
-            if (question.latin == selectedOption.value || question.greek == selectedOption.value) {
+            if (
+                question.latin == selectedOption.value ||
+                question.greek == selectedOption.value ||
+                question.chinese == selectedOption.value
+            ) {
                 incrementCorrect()
             } else {
                 incrementIncorrect()
@@ -159,9 +196,18 @@ class QuizViewModel @Inject constructor(private val application: Application) : 
         clearSelectedOption()
     }
 
+    private fun incrementCorrect() {
+        val correctSubmitted = correctSubmissions.value + 1
+        _correctSubmissions.value = correctSubmitted
+    }
+
+    private fun incrementIncorrect() {
+        val incorrectSubmitted = incorrectSubmissions.value + 1
+        _incorrectSubmissions.value = incorrectSubmitted
+    }
+
     fun selectOption(option: String) {
         _selectedOption.value = option
-
     }
 
     private fun clearSelectedOption() {
@@ -181,16 +227,6 @@ class QuizViewModel @Inject constructor(private val application: Application) : 
         anotherQuiz()
         _playerName.value = ""
         _langOption.value = ""
-    }
-
-    private fun incrementCorrect() {
-        val correctSubmitted = correctSubmissions.value + 1
-        _correctSubmissions.value = correctSubmitted
-    }
-
-    private fun incrementIncorrect() {
-        val incorrectSubmitted = incorrectSubmissions.value + 1
-        _incorrectSubmissions.value = incorrectSubmitted
     }
 
 }
